@@ -1,0 +1,109 @@
+[tool.poetry]
+name = "manipulation"
+# Use e.g. 2023.10.4.rc0 if I need to release a release candidate.
+# Use e.g. 2023.10.4.post1 if I need to rerelease on the same day.
+version = "2023.10.14"
+description = "MIT 6.421 - Robotic Manipulation"
+authors = ["Russ Tedrake <russt@mit.edu>"]
+license = "BSD License"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License"
+]
+include = [
+    "LICENSE.txt",
+    "README.md",
+    "pyproject.toml",
+    "manipulation/**/*.py",
+    "manipulation/**/*.npy",
+    "manipulation/**/*.sdf",
+    "manipulation/**/*.urdf",
+    "manipulation/**/*.xml",
+    "manipulation/**/*.yaml",
+    "manipulation/**/*.obj"
+]
+exclude = [
+    "*.egg-info/**",
+    "**/__pycache__/**",
+    "**/*.bazel",
+    "**/test/**",
+    "bazel-*",
+    "htmlbook/**",
+    "data/**",
+    "solutions/**",
+    "figures/**"
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "drake-nightly"
+url = "https://drake-packages.csail.mit.edu/whl/nightly/"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+cloudpickle = "2.2.1"  # needs to be pinned for stored files to remain compatible.
+gradescope-utils = ">=0.4.0"
+mpld3  = ">=0.5.6"
+psutil = ">=5.9.*"
+timeout-decorator = ">=0.4.1"
+#torch = ">=2.0.1"
+pyzmq = ">=25.0.0" # seems to be needed on python 3.11
+
+[tool.poetry.group.drake.dependencies]
+drake = { version = "==0.0.20231004", source = "drake-nightly" }
+
+[tool.poetry.group.extras]
+optional = true
+
+[tool.poetry.group.extras.dependencies]
+nevergrad = ">=0.4.3"  # TODO: avoid expensive bayesian optimization dep
+#pymcubes = ">=0.0.9"
+stable-baselines3 = "^1.8.0"
+
+[tool.poetry.group.dev.dependencies]
+beautifulsoup4 = ">=4.6.3"
+black = { version = ">=23.*", extras = ["jupyter"] }
+lxml = ">=4.9.2" # seems to be needed on python 3.11
+# Blocked on poetry known issue; see Developers.md
+#matplotlib = [ 
+#  {platform="darwin", version=">=3.7.0"}, # old versions don't build in XCode
+#  {platform="linux", version="3.5.1"}, # https://github.com/RobotLocomotion/drake/issues/14250 
+#]
+mysql-connector-python = ">=8.0.23"
+nbconvert = [ 
+  {platform="darwin", version="7.0.0"},
+  {platform="linux", version="6.4.0"},
+]
+requests = ">=2.25.1"
+
+[tool.black]
+line-length = 79
+include = '\.ipynb?$|\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.history
+  | bazel-*
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 79
+[tool.autoflake]
+in-place = true
+recursive = true
+expand-star-imports = true
+ignore-init-module-imports = true
+remove-all-unused-imports = true
+remove-duplicate-keys = true
+remove-unused-variables = true
