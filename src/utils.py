@@ -28,10 +28,8 @@ class Environment:
         self.locations = set(locations)
 
 class ActionType(Enum):
-    MOVEF = 1
-    MOVEH = 2
-    PICK = 3
-    PLACE = 4
+    MOVE_PICK = 1
+    MOVE_PLACE = 2
 
 class State:
     def __init__(self,
@@ -72,7 +70,7 @@ class State:
 class Preconditions:
     def __init__(self,
                  actionType: ActionType,
-                 gripPose: Optional[Pose] = None,
+                 gripPose: Pose,
                  holding: Optional[Object] = None,
                  obj: Optional[Object] = None) -> None:
         self.actionType = actionType
@@ -99,34 +97,23 @@ class Action:
         self.actionType = actionType
         
         # check to make sure that the Preconditions matches the ActionType
-        match preconditions.actionType:
-            case ActionType.MOVEF:
-                assert(preconditions.holding is None)
-                assert(preconditions.gripPose)
-            case ActionType.MOVEH:
-                assert(preconditions.holding)
-                assert(preconditions.gripPose)
-            case ActionType.PICK:
-                assert(preconditions.holding is None)
-                assert(preconditions.gripPose)
-                assert(preconditions.obj)
-            case ActionType.PLACE:
-                assert(preconditions.holding)
-                assert(preconditions.gripPose)
-                assert(preconditions.obj)
+        # GRIPPOSE USED TO BE OPTIONAL ON PRECONDITIONS, WHY??????
+        if preconditions.actionType == ActionType.MOVE_PICK:
+            assert(preconditions.holding is None)
+            assert(preconditions.obj is not None)
+        elif preconditions.actionType == ActionType.MOVE_PLACE:
+            assert(preconditions.holding is not None)
+            assert(preconditions.obj is None) # Is this what I want?
         self.preconditions = preconditions
         
         # check to make sure that the Effects match the ActionType
         match effects.actionType:
-            case ActionType.MOVEF:
+            case ActionType.MOVE_PICK:
+                assert()
+                assert(effects.pose2)
+            case ActionType.MOVE_PLACE:
                 assert(effects.pose1)
                 assert(effects.pose2)
-            case ActionType.MOVEH:
-                assert(effects.pose1)
-                assert(effects.pose2)
-                assert(effects.obj)
-            case ActionType.PICK | ActionType.PLACE:
-                assert(effects.pose1)
                 assert(effects.obj)
         self.effects = effects
     
