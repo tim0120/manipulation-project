@@ -9,7 +9,7 @@ class Pose:
         self.name = name
     
     def __repr__(self) -> str:
-        return f"Pose(name={self.name})"
+        return f"Pose(name={self.name}, position={self.position})"
 
     def __eq__(self, other: 'Pose') -> bool:
         return self.id == other.id
