@@ -26,7 +26,7 @@ class Object:
         if objId:
             self.id = objId
         else:
-            self.id = id(self)
+            self.id = id(self) % 1000
         # pose of object (should just be position/general region (eg quadrant) for this?)
         self.pose = pose
     

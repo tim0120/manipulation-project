@@ -18,7 +18,10 @@ env = Environment(
 
 # simple 1 pick, 1 place
 initState = State(objects=[block1, block2], env=env)
-goalState = State(objects=[Object(pose=q2, objId=block1.id), Object(pose=q1, objId=block2.id)], env=env, isGoal=True)
+goalState = State(objects=[Object(pose=q2, objId=block1.id)], env=env, isGoal=True)
+
+print(initState)
+print(goalState)
 
 states, actions = bfs(init=initState, goal=goalState)
 for s in states:
